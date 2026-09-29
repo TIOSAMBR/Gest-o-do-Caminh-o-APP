@@ -5,20 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <!-- PWA / iPhone -->
-    <meta name="theme-color" content="#111827">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Gestão do Caminhão">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Gestão do Caminhão">
-
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-
     <title>Gestão do Caminhão</title>
 
     <link rel="stylesheet" href="style.css">
+    <!-- PWA / iPhone -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Gestão do Caminhão">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+
 
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚚%3C/text%3E%3C/svg%3E">
 </head>
@@ -1287,6 +1284,43 @@
 
     </section>
 
+
+    <!-- ☁️ Conta e backup na nuvem -->
+    <section class="cloud-section" id="nuvem">
+        <div class="cloud-header">
+            <div>
+                <h2>☁️ Backup na nuvem</h2>
+                <p>Seus fretes, despesas e configurações podem ficar sincronizados entre seus dispositivos.</p>
+            </div>
+            <span id="cloudStatus" class="cloud-status">☁️ Firebase ainda não configurado</span>
+        </div>
+
+        <div id="cloudLogin" class="cloud-login">
+            <div class="cloud-form">
+                <label for="cloudEmail">E-mail</label>
+                <input id="cloudEmail" type="email" autocomplete="email" placeholder="seu@email.com">
+                <label for="cloudSenha">Senha</label>
+                <input id="cloudSenha" type="password" autocomplete="current-password" placeholder="Mínimo de 6 caracteres">
+                <div class="cloud-actions">
+                    <button type="button" onclick="entrarFirebase()">🔐 Entrar</button>
+                    <button type="button" class="secondary" onclick="criarContaFirebase()">Criar conta</button>
+                </div>
+                <p id="cloudMessage" class="cloud-message"></p>
+            </div>
+        </div>
+
+        <div id="cloudAccount" class="cloud-account" style="display:none">
+            <div>
+                <strong>☁️ Conta conectada</strong>
+                <span id="cloudEmailLogado"></span>
+            </div>
+            <div class="cloud-actions">
+                <button type="button" onclick="sincronizarFirebaseAgora()">🔄 Sincronizar agora</button>
+                <button type="button" class="secondary" onclick="sairFirebase()">Sair</button>
+            </div>
+        </div>
+    </section>
+
 </main>
 
 
@@ -1302,17 +1336,13 @@
 
 
 <script src="script.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="firebase-sync.js"></script>
 <script>
-    // Registra o Service Worker para permitir instalação como PWA
-    // e funcionamento básico offline.
-    if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("service-worker.js")
-                .then(() => console.log("🚚 Gestão do Caminhão: PWA ativado."))
-                .catch((error) => console.error("Erro ao registrar PWA:", error));
-        });
-    }
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('service-worker.js').catch(console.error); }
 </script>
 
 </body>
