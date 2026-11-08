@@ -836,6 +836,44 @@
 
         </div>
 
+        <!-- RESULTADO ACUMULADO E HISTÓRICO ANUAL -->
+        <div class="lifetime-finance" id="lifetimeFinance">
+            <div class="lifetime-heading">
+                <div>
+                    <h3>💰 Resultado financeiro acumulado</h3>
+                    <p>Resumo de todos os fretes e despesas registrados, desde o primeiro lançamento.</p>
+                </div>
+            </div>
+
+            <div class="lifetime-cards">
+                <div class="lifetime-card"><span>Faturamento total</span><strong id="historicoFaturamento">R$ 0,00</strong></div>
+                <div class="lifetime-card"><span>Custos dos fretes</span><strong id="historicoCustosFretes">R$ 0,00</strong></div>
+                <div class="lifetime-card"><span>Despesas gerais</span><strong id="historicoDespesas">R$ 0,00</strong></div>
+                <div class="lifetime-card"><span>Gastos totais</span><strong id="historicoGastos">R$ 0,00</strong></div>
+                <div class="lifetime-card lifetime-profit"><span>Lucro acumulado</span><strong id="historicoLucro">R$ 0,00</strong></div>
+                <div class="lifetime-card"><span>Margem de lucro</span><strong id="historicoMargem">0%</strong></div>
+                <div class="lifetime-card"><span>Quilometragem total</span><strong id="historicoKm">0 km</strong></div>
+                <div class="lifetime-card"><span>Total de fretes</span><strong id="historicoQuantidade">0</strong></div>
+            </div>
+
+            <div class="annual-history">
+                <div class="annual-history-heading">
+                    <div>
+                        <h3>📅 Resultado separado por ano</h3>
+                        <p>Veja quanto faturou, gastou e lucrou em cada ano.</p>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="annual-history-table">
+                        <thead><tr>
+                            <th>Ano</th><th>Faturamento</th><th>Custos dos fretes</th><th>Despesas</th><th>Gastos totais</th><th>Lucro</th><th>Margem</th><th>KM</th><th>Fretes</th>
+                        </tr></thead>
+                        <tbody id="tabelaHistoricoAnual"><tr><td colspan="9" class="empty">Nenhum registro financeiro.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </section>
 
 

@@ -1533,3 +1533,89 @@ body.dark-mode {
         font-size: 18px;
     }
 }
+
+
+/* =========================================================
+   RESULTADO FINANCEIRO ACUMULADO E HISTÓRICO ANUAL
+========================================================= */
+.lifetime-finance {
+    margin-top: 30px;
+    padding-top: 26px;
+    border-top: 1px solid #e5e7eb;
+}
+.lifetime-heading, .annual-history-heading {
+    margin-bottom: 18px;
+}
+.lifetime-heading h3, .annual-history-heading h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #1f2937;
+}
+.lifetime-heading p, .annual-history-heading p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+.lifetime-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+}
+.lifetime-card {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.lifetime-card span {
+    color: #6b7280;
+    font-size: 12px;
+}
+.lifetime-card strong {
+    color: #111827;
+    font-size: 19px;
+    overflow-wrap: anywhere;
+}
+.lifetime-card.lifetime-profit {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+.lifetime-card .profit-positive, .annual-profit-positive { color: #16a34a; }
+.lifetime-card .profit-negative, .annual-profit-negative { color: #dc2626; }
+.annual-history { margin-top: 8px; }
+.annual-history .table-container { overflow-x: auto; }
+.annual-history-table { width: 100%; min-width: 850px; border-collapse: collapse; }
+.annual-history-table th, .annual-history-table td {
+    padding: 12px 14px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+.annual-history-table th {
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+}
+.dark-mode .lifetime-finance { border-color: #374151; }
+.dark-mode .lifetime-heading h3, .dark-mode .annual-history-heading h3 { color: #f9fafb; }
+.dark-mode .lifetime-heading p, .dark-mode .annual-history-heading p,
+.dark-mode .lifetime-card span { color: #9ca3af; }
+.dark-mode .lifetime-card { background: #1f2937; border-color: #374151; }
+.dark-mode .lifetime-card strong { color: #f9fafb; }
+.dark-mode .lifetime-card.lifetime-profit { background: #10271b; border-color: #166534; }
+.dark-mode .annual-history-table th { background: #1f2937; color: #9ca3af; }
+.dark-mode .annual-history-table td { border-color: #374151; }
+@media (max-width: 900px) {
+    .lifetime-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+    .lifetime-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lifetime-card { padding: 12px; }
+    .lifetime-card strong { font-size: 15px; }
+}

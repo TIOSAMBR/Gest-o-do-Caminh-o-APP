@@ -108,6 +108,8 @@ function atualizarTudo() {
 
     atualizarAnaliseMensal();
 
+    atualizarResumoHistoricoFinanceiro();
+
     atualizarPreview();
 
     atualizarComparacao();
@@ -1651,6 +1653,66 @@ function calcularResumo(
 
     };
 
+}
+
+
+// =====================================================
+// RESULTADO FINANCEIRO ACUMULADO E POR ANO
+// =====================================================
+
+function atualizarResumoHistoricoFinanceiro() {
+    const resumo = calcularResumo(fretes, despesas);
+
+    atualizarElemento("historicoFaturamento", dinheiro(resumo.faturamento));
+    atualizarElemento("historicoCustosFretes", dinheiro(resumo.custosFretes));
+    atualizarElemento("historicoDespesas", dinheiro(resumo.despesas));
+    atualizarElemento("historicoGastos", dinheiro(resumo.gastosTotais));
+    atualizarElemento("historicoLucro", dinheiro(resumo.lucroReal));
+    atualizarElemento("historicoMargem", porcentagem(resumo.margem));
+    atualizarElemento("historicoKm", formatarNumero(resumo.km) + " km");
+    atualizarElemento("historicoQuantidade", resumo.quantidade);
+
+    const lucroElemento = document.getElementById("historicoLucro");
+    if (lucroElemento) {
+        lucroElemento.classList.toggle("profit-negative", resumo.lucroReal < 0);
+        lucroElemento.classList.toggle("profit-positive", resumo.lucroReal >= 0);
+    }
+
+    const corpo = document.getElementById("tabelaHistoricoAnual");
+    if (!corpo) return;
+
+    const anos = new Set();
+    [...fretes, ...despesas].forEach(item => {
+        const data = String(item.data || "");
+        if (/^\d{4}-\d{2}-\d{2}$/.test(data)) anos.add(data.slice(0, 4));
+    });
+
+    const anosOrdenados = [...anos].sort((a, b) => Number(b) - Number(a));
+    corpo.innerHTML = "";
+
+    if (!anosOrdenados.length) {
+        corpo.innerHTML = '<tr><td colspan="9" class="empty">Nenhum registro financeiro para exibir.</td></tr>';
+        return;
+    }
+
+    anosOrdenados.forEach(ano => {
+        const fretesAno = fretes.filter(item => String(item.data || "").startsWith(ano + "-"));
+        const despesasAno = despesas.filter(item => String(item.data || "").startsWith(ano + "-"));
+        const dados = calcularResumo(fretesAno, despesasAno);
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+            <td><strong>${ano}</strong></td>
+            <td>${dinheiro(dados.faturamento)}</td>
+            <td>${dinheiro(dados.custosFretes)}</td>
+            <td>${dinheiro(dados.despesas)}</td>
+            <td><strong>${dinheiro(dados.gastosTotais)}</strong></td>
+            <td class="${dados.lucroReal >= 0 ? "annual-profit-positive" : "annual-profit-negative"}"><strong>${dinheiro(dados.lucroReal)}</strong></td>
+            <td>${porcentagem(dados.margem)}</td>
+            <td>${formatarNumero(dados.km)} km</td>
+            <td>${dados.quantidade}</td>
+        `;
+        corpo.appendChild(linha);
+    });
 }
 
 
