@@ -204,6 +204,10 @@ body {
     margin-bottom: 20px;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 .field {
     display: flex;
     flex-direction: column;
@@ -214,6 +218,28 @@ body {
     font-size: 13px;
     font-weight: 600;
     color: #4b5563;
+}
+
+.field-help {
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.installment-info {
+    display: block;
+    margin-top: 4px;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dark-mode .field-help {
+    color: #9ca3af;
+}
+
+.dark-mode .installment-info {
+    color: #93c5fd;
 }
 
 .field input,

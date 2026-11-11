@@ -946,96 +946,171 @@ function limparFormularioFrete() {
 
 
 // =====================================================
+// DESPESAS PARCELADAS
+// =====================================================
+
+function alternarParcelamentoDespesa() {
+
+    const formaPagamento =
+        document.getElementById("formaPagamentoDespesa")?.value || "avista";
+
+    const campoParcelas =
+        document.getElementById("campoQuantidadeParcelas");
+
+    if (campoParcelas) {
+        campoParcelas.hidden = formaPagamento !== "parcelada";
+    }
+
+}
+
+
+// Soma meses sem deixar datas como 29, 30 ou 31
+// avançarem incorretamente para o mês posterior.
+function adicionarMesesData(data, quantidadeMeses) {
+
+    const [ano, mes, dia] = data.split("-").map(Number);
+    const indiceMes = (mes - 1) + quantidadeMeses;
+    const novoAno = ano + Math.floor(indiceMes / 12);
+    const novoMes = ((indiceMes % 12) + 12) % 12;
+    const ultimoDia = new Date(novoAno, novoMes + 1, 0).getDate();
+    const novoDia = Math.min(dia, ultimoDia);
+
+    return `${novoAno}-${String(novoMes + 1).padStart(2, "0")}-${String(novoDia).padStart(2, "0")}`;
+
+}
+
+
+// Divide o valor em centavos para garantir que a soma
+// de todas as parcelas seja exatamente igual ao total informado.
+function dividirValorEmParcelas(valorTotal, quantidade) {
+
+    const totalCentavos = Math.round(valorTotal * 100);
+    const valorBase = Math.floor(totalCentavos / quantidade);
+    const centavosRestantes = totalCentavos % quantidade;
+
+    return Array.from({ length: quantidade }, (_, indice) =>
+        (valorBase + (indice < centavosRestantes ? 1 : 0)) / 100
+    );
+
+}
+
+
+// =====================================================
 // REGISTRAR DESPESA
 // =====================================================
 
 function registrarDespesa() {
 
     const data =
-        document.getElementById(
-            "dataDespesa"
-        )?.value || "";
-
+        document.getElementById("dataDespesa")?.value || "";
 
     const tipo =
-        document.getElementById(
-            "tipoDespesa"
-        )?.value || "";
-
+        document.getElementById("tipoDespesa")?.value || "";
 
     const descricao =
-        document.getElementById(
-            "descricaoDespesa"
-        )?.value.trim() || "";
-
+        document.getElementById("descricaoDespesa")?.value.trim() || "";
 
     const valor =
         numero("valorDespesa");
 
+    const formaPagamento =
+        document.getElementById("formaPagamentoDespesa")?.value || "avista";
+
+    const quantidadeParcelas =
+        Number(document.getElementById("quantidadeParcelasDespesa")?.value || 0);
 
     if (!data) {
-
-        alert(
-            "Informe a data da despesa."
-        );
-
+        alert("Informe a data da despesa.");
         return;
-
     }
-
 
     if (!tipo) {
+        alert("Selecione o tipo da despesa.");
+        return;
+    }
 
-        alert(
-            "Selecione o tipo da despesa."
-        );
+    const valorTotalCentavos = Math.round(valor * 100);
 
+    if (valorTotalCentavos <= 0) {
+        alert("Informe um valor total de pelo menos R$ 0,01.");
+        return;
+    }
+
+    if (formaPagamento === "parcelada" &&
+        (!Number.isInteger(quantidadeParcelas) || quantidadeParcelas < 2 || quantidadeParcelas > 120)) {
+        alert("Informe uma quantidade de parcelas entre 2 e 120.");
+        return;
+    }
+
+    if (formaPagamento === "parcelada" && valorTotalCentavos < quantidadeParcelas) {
+        alert("O valor total precisa ser de pelo menos R$ 0,01 por parcela.");
+        return;
+    }
+
+    // Mantém o comportamento antigo para despesas pagas à vista.
+    if (formaPagamento !== "parcelada") {
+
+        despesas.push({
+            id: gerarIdUnicoDespesa(),
+            data,
+            tipo,
+            descricao,
+            valor: Math.round(valor * 100) / 100
+        });
+
+        salvarDespesas();
+        limparFormularioDespesa();
+        atualizarTudo();
+        alert("Despesa registrada com sucesso!");
         return;
 
     }
 
+    const valoresParcelas =
+        dividirValorEmParcelas(valor, quantidadeParcelas);
 
-    if (valor <= 0) {
+    const grupoId = `parcelamento-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    let proximoId = gerarIdUnicoDespesa();
 
-        alert(
-            "Informe o valor da despesa."
-        );
+    valoresParcelas.forEach((valorParcela, indice) => {
 
-        return;
+        despesas.push({
+            id: proximoId++,
+            data: adicionarMesesData(data, indice),
+            tipo,
+            descricao,
+            valor: valorParcela,
+            parcelamento: {
+                id: grupoId,
+                parcela: indice + 1,
+                total: quantidadeParcelas,
+                valorTotal: Math.round(valor * 100) / 100,
+                dataInicial: data
+            }
+        });
 
-    }
-
-
-    const despesa = {
-
-        id: Date.now(),
-
-        data,
-
-        tipo,
-
-        descricao,
-
-        valor
-
-    };
-
-
-    despesas.push(despesa);
-
+    });
 
     salvarDespesas();
-
-
     limparFormularioDespesa();
-
-
     atualizarTudo();
 
-
     alert(
-        "Despesa registrada com sucesso!"
+        `Despesa parcelada registrada! ${quantidadeParcelas} parcelas foram lançadas, uma por mês, a partir de ${formatarData(data)}.`
     );
+
+}
+
+
+function gerarIdUnicoDespesa() {
+
+    let id = Date.now();
+
+    while (despesas.some(despesa => Number(despesa.id) === id)) {
+        id += 1;
+    }
+
+    return id;
 
 }
 
@@ -1077,6 +1152,12 @@ function limparFormularioDespesa() {
             "valorDespesa"
         );
 
+    const formaPagamento =
+        document.getElementById("formaPagamentoDespesa");
+
+    const quantidadeParcelas =
+        document.getElementById("quantidadeParcelasDespesa");
+
 
     if (tipo)
         tipo.value = "";
@@ -1089,6 +1170,13 @@ function limparFormularioDespesa() {
     if (valor)
         valor.value = "";
 
+    if (formaPagamento)
+        formaPagamento.value = "avista";
+
+    if (quantidadeParcelas)
+        quantidadeParcelas.value = "2";
+
+    alternarParcelamentoDespesa();
 
     definirDataDespesa();
 
@@ -1309,6 +1397,7 @@ function atualizarTabelaDespesas() {
 
             <td>
                 ${escapar(despesa.descricao)}
+                ${despesa.parcelamento ? `<small class="installment-info">Parcela ${despesa.parcelamento.parcela}/${despesa.parcelamento.total}</small>` : ""}
             </td>
 
             <td class="lucro-negative">
@@ -1343,27 +1432,51 @@ function atualizarTabelaDespesas() {
 
 function excluirDespesa(id) {
 
-    if (
-        !confirm(
-            "Deseja realmente excluir esta despesa?"
-        )
-    ) {
+    const despesaSelecionada =
+        despesas.find(despesa => String(despesa.id) === String(id));
 
+    if (!despesaSelecionada) {
         return;
+    }
+
+    let excluirTodasParcelas = false;
+
+    if (despesaSelecionada.parcelamento?.id) {
+
+        const grupoId = despesaSelecionada.parcelamento.id;
+        const quantidadeNoGrupo = despesas.filter(
+            despesa => despesa.parcelamento?.id === grupoId
+        ).length;
+
+        excluirTodasParcelas = confirm(
+            `Esta despesa faz parte de um parcelamento com ${quantidadeNoGrupo} parcelas. Deseja excluir todas as parcelas?`
+        );
+
+        if (!excluirTodasParcelas && !confirm("Deseja excluir somente esta parcela?")) {
+            return;
+        }
+
+        despesas = despesas.filter(despesa => {
+            if (excluirTodasParcelas) {
+                return despesa.parcelamento?.id !== grupoId;
+            }
+
+            return String(despesa.id) !== String(id);
+        });
+
+    } else {
+
+        if (!confirm("Deseja realmente excluir esta despesa?")) {
+            return;
+        }
+
+        despesas = despesas.filter(
+            despesa => String(despesa.id) !== String(id)
+        );
 
     }
 
-
-    despesas =
-        despesas.filter(
-            despesa =>
-                despesa.id !== id
-        );
-
-
     salvarDespesas();
-
-
     atualizarTudo();
 
 }

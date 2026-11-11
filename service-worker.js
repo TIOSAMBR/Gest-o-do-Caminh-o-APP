@@ -1,4 +1,4 @@
-const CACHE = 'gestao-caminhao-v3';
+const CACHE = 'gestao-caminhao-v4';
 const APP_SHELL = [
   './', './index.html', './style.css', './script.js', './firebase-config.js', './firebase-sync.js', './manifest.json'
 ];

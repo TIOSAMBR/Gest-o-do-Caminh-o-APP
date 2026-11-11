@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/versão-2.0.0-2563eb" alt="Versão 2.0.0">
+  <img src="https://img.shields.io/badge/versão-2.1.0-2563eb" alt="Versão 2.0.0">
   <img src="https://img.shields.io/badge/feito%20com-JavaScript-f7df1e" alt="JavaScript">
   <img src="https://img.shields.io/badge/PWA-sim-5a3" alt="PWA">
 </p>
@@ -41,6 +41,9 @@ O sistema funciona em navegadores modernos, pode ser instalado como um aplicativ
 - Registro de data, descrição/categoria e valor, conforme os campos disponíveis no formulário.
 - Consulta e gerenciamento do histórico de despesas.
 - Consideração das despesas nos cálculos financeiros do período.
+- Registro de despesas à vista ou parceladas, com geração automática de uma parcela por mês.
+- Divisão automática do valor total em centavos, mantendo a soma das parcelas igual ao valor informado.
+- Identificação de cada parcela no histórico e opção de excluir somente uma parcela ou todo o parcelamento.
 
 ### ⚙️ Configurações do caminhão
 
@@ -205,6 +208,13 @@ Consulte também [`FIREBASE-LEIA-ME.md`](FIREBASE-LEIA-ME.md) para as instruçõ
 Depois da publicação, o endereço do site ficará disponível na própria página **Settings → Pages** do repositório.
 
 ## 🏷️ Histórico de versões
+
+### v2.1.0 — Despesas parceladas
+
+- Inclusão da opção de registrar despesas à vista ou parceladas.
+- Geração automática das parcelas nos meses seguintes, a partir da data informada para a primeira parcela.
+- Distribuição de eventuais centavos restantes para garantir que a soma corresponda ao valor total.
+- Identificação das parcelas no histórico e exclusão individual ou de todo o parcelamento.
 
 ### v2.0.0 — Análise financeira ampliada
 
